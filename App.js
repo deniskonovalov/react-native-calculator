@@ -21,12 +21,16 @@ export default class App extends Component {
         super();
         this.operations = ['D','+','-','*','/'];
         this.state = {
-            resultText: ''
+            resultText: '',
+            calculation: ''
         };
     }
 
     calculateResult() {
         const text = this.state.resultText;
+        this.setState({
+            calculationText: eval(text)
+        });
     }
 
     buttonPressed(text) {
@@ -100,7 +104,7 @@ export default class App extends Component {
                     <Text style={styles.resultText}>{this.state.resultText}</Text>
                 </View>
                 <View style={styles.calculation}>
-                    <Text style={styles.calculationText}>121</Text>
+                    <Text style={styles.calculationText}>{this.state.calculationText}</Text>
                 </View>
                 <View style={styles.buttons}>
                     <View style={styles.numbers}>
