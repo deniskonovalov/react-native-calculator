@@ -19,10 +19,10 @@ export default class App extends Component {
 
     constructor() {
         super();
-        this.operations = ['D','+','-','*','/'];
+        this.operations = ['C','DEL','+','-','*','/'];
         this.state = {
             resultText: '',
-            calculation: ''
+            calculationText: ''
         };
     }
 
@@ -33,9 +33,21 @@ export default class App extends Component {
         });
     }
 
+    validate() {
+        let text = this.state.resultText;
+        switch(text.slice(-1)){
+            case '+':
+            case '-':
+            case '*':
+            case '/':
+                return false;
+        }
+        return true;
+    }
+
     buttonPressed(text) {
         if(text == '='){
-            this.calculateResult();
+            return this.validate() && this.calculateResult();
         }
 
         this.setState({
@@ -45,11 +57,17 @@ export default class App extends Component {
 
     operate(operation) {
         switch(operation){
-            case 'D':
+            case 'DEL':
                 let text = this.state.resultText.split('');
                 text.pop();
                 this.setState({
                     resultText: text.join('')
+                });
+                break;
+            case 'C':
+                this.setState({
+                    resultText: '',
+                    calculationText: ''
                 });
                 break;
             case '+':
@@ -69,30 +87,30 @@ export default class App extends Component {
 
     render() {
         let rows = [];
-        let nums = [[1,2,3],[4,5,6],[7,8,9],['.',0,'=']];
+        let nums = [[7,8,9],[4,5,6],[1,2,3],['.',0,'=']];
 
         for (let i = 0; i < 4; i++) {
             let row = [];
 
             for (let j = 0; j <3; j++) {
                 row.push(
-                    <TouchableOpacity onPress={() => this.buttonPressed(nums[i][j])} style={styles.btn}>
+                    <TouchableOpacity key={nums[i][j]} onPress={() => this.buttonPressed(nums[i][j])} style={styles.btn}>
                         <Text style={styles.btnText}>{nums[i][j]}</Text>
                     </TouchableOpacity>
                 );
             }
 
             rows.push(
-                <View style={styles.row}>
+                <View key={i} style={styles.row}>
                     {row}
                 </View>
             );
         }
 
         let ops = [];
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 6; i++) {
             ops.push(
-                <TouchableOpacity style={styles.btn} onPress={() => this.operate(this.operations[i])}>
+                <TouchableOpacity key={this.operations[i]} style={styles.btn} onPress={() => this.operate(this.operations[i])}>
                     <Text style={[styles.btnText, styles.white]}>{this.operations[i]}</Text>
                 </TouchableOpacity>
             );
@@ -130,15 +148,16 @@ const styles = StyleSheet.create({
         alignSelf: 'stretch'
     },
     btnText: {
-        fontSize: 30
+        fontSize: 30,
+        color: 'white'
     },
     calculationText: {
-        color: 'white',
-        fontSize: 24,
+        color: 'black',
+        fontSize: 40,
     },
     resultText: {
-        color: 'white',
-        fontSize: 30,
+        color: 'black',
+        fontSize: 55,
         
     },
     row: {
@@ -149,13 +168,13 @@ const styles = StyleSheet.create({
     },
     result: {
         flex: 2,
-        backgroundColor: 'red',
+        backgroundColor: 'white',
         justifyContent: 'center',
         alignItems: 'flex-end'
     },
     calculation: {
         flex: 1,
-        backgroundColor: 'green',
+        backgroundColor: 'white',
         justifyContent: 'center',
         alignItems: 'flex-end'
     },
@@ -165,11 +184,11 @@ const styles = StyleSheet.create({
     },
     numbers: {
         flex: 3,
-        backgroundColor: 'yellow'
+        backgroundColor: '#434343'
     },
     operations: {
         flex: 1,
-        backgroundColor: 'black',
+        backgroundColor: '#636363',
         justifyContent: 'space-around'
     },
     white: {
